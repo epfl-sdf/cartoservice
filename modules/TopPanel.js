@@ -2,6 +2,7 @@ import React from 'react'
 import { Row, Col } from 'react-bootstrap'
 import Typeahead from 'react-bootstrap-typeahead'
 import * as _ from 'lodash'
+import 'whatwg-fetch'
 
 export default React.createClass({
     getInitialState() {
