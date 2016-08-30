@@ -1,6 +1,7 @@
 import React from 'react'
 import { ListGroup, ListGroupItem, OverlayTrigger, Tooltip, Glyphicon } from 'react-bootstrap'
 import * as _ from 'lodash'
+import 'whatwg-fetch'
 
 export default React.createClass({
     getInitialState() {
