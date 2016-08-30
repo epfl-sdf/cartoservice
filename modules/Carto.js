@@ -2,7 +2,7 @@ import React from 'react';
 import * as d3 from 'd3';
 
 // To be redifined later to fit parent size
-const w = 500, h = 300;
+const w = 1000, h = 562;
 
 export default React.createClass({
     render() {
@@ -46,6 +46,8 @@ export default React.createClass({
         dataset.nodes[0].fx = w / 2;
         dataset.nodes[0].fy = h / 2;
 
+        console.log(dataset);
+
         return dataset
     },
     clearGraph() {
@@ -59,11 +61,11 @@ export default React.createClass({
 
         // init simulation
         var simulation = d3.forceSimulation(dataset.nodes)
-            .force("link", d3.forceLink(dataset.edges).distance([80]))
+            .force("link", d3.forceLink(dataset.edges).strength(0.1))
             .force("sys link", d3.forceLink(dataset.sysEdge).distance([10]))
             .force("central", d3.forceCenter(w / 2, h / 2))
-            .force("charge", d3.forceManyBody().strength([-50]))
-            .force("colliding", d3.forceCollide(15))
+            .force("charge", d3.forceManyBody().strength([-100]))
+            .force("colliding", d3.forceCollide(25))
 
         // init svg
         var svg = d3.select("svg#carto")
@@ -85,14 +87,11 @@ export default React.createClass({
             .style("stroke", "red")
             .style("stroke-width", 1);
 
-        var nodes = svg.selectAll("circle")
+        var nodes = svg.selectAll("g")
             .data(dataset.nodes)
             .enter()
-            .append("circle")
-            .attr("r", 10)
-            .style("fill", function (d, i) {
-                return colors(i);
-            })
+            .append("g")
+            .attr("class", "node")
             .call(d3.drag()
                 .on("drag", (d) => {
                     if (!d.selected) {
@@ -117,6 +116,22 @@ export default React.createClass({
                 simulation.alpha(0.3).restart();
             })
 
+        /*nodes
+            .append("circle")
+            .attr("r", 10)
+            .style("fill", (d, i) => {
+                return colors(i);
+            });*/
+        
+        nodes
+            .append("text")
+            .attr("text-anchor", "middle")
+            .attr("alignment-baseline", "middle")
+            .text((d) => {
+                return d.label;
+            });
+        
+
         // horloge du système
         simulation.on("tick", function () {
             edges
@@ -132,8 +147,7 @@ export default React.createClass({
                 .attr("y2", function (d) { return d.target.y; });
 
             nodes
-                .attr("cx", function (d) { return d.x; })
-                .attr("cy", function (d) { return d.y; });
+                .attr("transform", function (d) { return `translate(${d.x}, ${d.y})`; })
         });
     }
 })
