@@ -1,0 +1,17 @@
+import React from 'react'
+import { Col } from 'react-bootstrap'
+import * as _ from 'lodash'
+
+import Customs from './Customs'
+import ProcessServices from './ProcessServices'
+
+export default React.createClass({
+    render() {
+        return (
+            <Col md={3}>
+                <Customs changeProcess={this.props.changeProcess}/>
+                <ProcessServices process={this.props.process}/>
+            </Col>
+        )
+    }
+})
