@@ -22,8 +22,9 @@ export default React.createClass({
             result.then(res => {
                 return res.json()
             }).then(json => {
+                console.log(json.services);
                 this.setState({
-                    services: _.map(json.services, k => ({ id: k.ID, label: k.Label, active: true }))
+                    services: _.map(json.services, k => ({ id: k.ServiceId, label: k.Label, active: true }))
                 })
             }).catch(ex => {
                 console.log('failed', ex)
