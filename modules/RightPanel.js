@@ -25,7 +25,7 @@ export default React.createClass({
                 return res.json()
             }).then(json => {
                 data.process = { id: process.id, label: process.label, systemId: json.processInfo.SystemId }
-                data.services = _.map(json.services, k => ({ id: k.ID, label: k.Label, systemId: k.SystemId }))
+                data.services = _.map(json.services, k => ({ id: k.ServiceId, label: k.Label, systemId: k.SystemId }))
 
                 this.setState({
                     data: data
