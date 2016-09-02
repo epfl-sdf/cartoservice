@@ -18,7 +18,7 @@ app.use(cors())
 app.use(express.static(path.join(__dirname, 'public'), { index: false }))
 
 // routes the API
-app.use('/api', apiRoute())
+app.use('/api', apiRoute)
 
 // send all requests to index.html so browserHistory works
 app.get('*', (req, res) => {
