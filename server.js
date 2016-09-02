@@ -5,13 +5,20 @@ import React from 'react'
 import { renderToString } from 'react-dom/server'
 import { match, RouterContext } from 'react-router'
 import routes from './modules/routes'
+import apiRoute from './api/routes'
+import cors from 'cors'
 
 var app = express()
 
 app.use(compression())
 
+app.use(cors())
+
 // serve our static stuff like index.css
 app.use(express.static(path.join(__dirname, 'public'), { index: false }))
+
+// routes the API
+app.use('/api', apiRoute())
 
 // send all requests to index.html so browserHistory works
 app.get('*', (req, res) => {
@@ -49,7 +56,7 @@ function renderPage(appHtml) {
    `
 }
 
-var PORT = process.env.PORT || 8080
+var PORT = process.env.PORT || 3000
 app.listen(PORT, function () {
   console.log('Production Express server running at localhost:' + PORT)
 })
