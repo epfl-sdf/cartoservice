@@ -18,15 +18,18 @@ export default React.createClass({
             credentials: "omit"
         })
 
-        result.then(res => {
-            return res.json()
-        }).then(json => {
-            this.setState({
-                processes: _.map(json, k => ({ id: k.ID, label: k.Label, type: 'process' }))
+        result
+            .then(res => {
+                return res.json()
             })
-        }).catch(ex => {
-            console.log('failed', ex)
-        })
+            .then(json => {
+                this.setState({
+                    processes: _.map(json, k => ({ id: k.ID, label: k.Label, type: 'process' }))
+                })
+            })
+            .catch(ex => {
+                console.log('failed', ex)
+            })
     },
     render() {
         return (

@@ -103,8 +103,6 @@ export default React.createClass({
                 })
                 .on("end", (d) => {
                     if (!d.selected) {
-                        d.fx = null;
-                        d.fy = null;
                         simulation.alpha(0.3).restart();
                     }
                 })

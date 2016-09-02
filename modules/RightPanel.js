@@ -21,16 +21,19 @@ export default React.createClass({
                 credentials: "omit"
             })
 
-            result.then(res => {
+            result
+            .then(res => {
                 return res.json()
-            }).then(json => {
+            })
+            .then(json => {
                 data.process = { id: process.id, label: process.label, systemId: json.processInfo.SystemId }
                 data.services = _.map(json.services, k => ({ id: k.ServiceId, label: k.Label, systemId: k.SystemId }))
 
                 this.setState({
                     data: data
                 })
-            }).catch(ex => {
+            })
+            .catch(ex => {
                 console.log('failed', ex)
             })
         }
