@@ -1,4 +1,5 @@
 g.node text {
-    font-size: x-small;
+    font-size: small;
     width: 70;
+    cursor: pointer;
 }

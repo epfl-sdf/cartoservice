@@ -5,13 +5,9 @@ import 'whatwg-fetch'
 
 export default React.createClass({
     getInitialState() {
-        return { services: [], modified: false }
+        return { services: [] }
     },
     fetchServices(process) {
-        this.setState({
-            modified: false
-        })
-
         if (!_.isEmpty(process)) {
             let result = fetch(`http://128.178.116.122:31304/api/get/${process.type}/${process.id}`, {
                 headers: {
@@ -44,8 +40,7 @@ export default React.createClass({
         arr.splice(index, 1, _.set(arr[index], 'active', !arr[index].active))
 
         this.setState({
-            services: arr,
-            modified: true
+            services: arr
         })
     },
     handleSave() {
@@ -53,11 +48,8 @@ export default React.createClass({
     },
     render() {
         let services = this.state.services
-        const tooltip = (
-            <Tooltip id="tooltip">Save changes</Tooltip>
-        );
         return !_.isEmpty(this.props.process) && <div>
-            <p>{'Services used in  \"' + this.props.process.label + '\" '} {this.state.modified && <OverlayTrigger placement="top" overlay={tooltip}><Glyphicon onClick={this.handleSave} style={{cursor: "pointer"}} glyph="floppy-save" /></OverlayTrigger>}</p>
+            <p>{'Services used in  \"' + this.props.process.label + '\" '}</p>
             <ListGroup>
                 {services.map(
                     (item, i) => <ListGroupItem onClick={this.toggleView.bind(this, item.id) } key={item.id} active={item.active}>{item.label}</ListGroupItem>

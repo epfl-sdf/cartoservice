@@ -1,19 +1,25 @@
 import React from 'react';
 import * as d3 from 'd3';
 
+import CartoMenu from './CartoMenu'
+
 // To be redifined later to fit parent size
 const w = 1000, h = 562;
 
 export default React.createClass({
+    getInitialState() {
+        return { modified: false }
+    },
     render() {
         return (
             <div style={{
                 width: '100%',
                 height: '100%'
             }}>
-                <svg id="carto" ></svg>
+                <CartoMenu modified={this.state.modified} />
+                <svg id={"carto"} ></svg>
             </div>
-        );
+        )
     },
     componentDidMount() {
         if (!_.isEmpty(this.props.data)) {
@@ -24,6 +30,11 @@ export default React.createClass({
         if (!_.isEmpty(nextProps)) {
             this.drawGraph(this.parseData(nextProps.data))
         }
+    },
+    setSavable() {
+        this.setState({
+            modified: true
+        })
     },
     parseData(data) {
         const dataset = {
@@ -55,6 +66,9 @@ export default React.createClass({
     },
     drawGraph(dataset) {
         this.clearGraph()
+        this.setState({
+            modified: false
+        })
 
         // init color pick
         var colors = d3.scaleOrdinal(d3.schemeCategory10);
@@ -120,7 +134,7 @@ export default React.createClass({
             .style("fill", (d, i) => {
                 return colors(i);
             });*/
-        
+
         nodes
             .append("text")
             .attr("text-anchor", "middle")
@@ -128,7 +142,7 @@ export default React.createClass({
             .text((d) => {
                 return d.label;
             });
-        
+
 
         // horloge du système
         simulation.on("tick", function () {

@@ -48,7 +48,7 @@ export default React.createClass({
                                 />
                         </Col>
                         <Col md={5}>
-                            <p>...</p>
+                            <p>&nbsp;</p>
                         </Col>
                     </Row>
                 </Col>
