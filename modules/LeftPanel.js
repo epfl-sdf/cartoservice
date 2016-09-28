@@ -9,7 +9,7 @@ export default React.createClass({
     render() {
         return (
             <Col md={3}>
-                <Customs changeProcess={this.props.changeProcess}/>
+                <Customs customs={this.props.customs} changeProcess={this.props.changeProcess}/>
                 <ProcessServices process={this.props.process}/>
             </Col>
         )

@@ -21,7 +21,7 @@ export default React.createClass({
             }).then(json => {
                 console.log(json.services);
                 this.setState({
-                    services: _.map(json.services, k => ({ id: k.ServiceId, label: k.Label, active: true }))
+                    services: _.map(json.services, k => ({ id: k.ServiceId, label: k.Label}))
                 })
             }).catch(ex => {
                 console.log('failed', ex)
@@ -34,25 +34,13 @@ export default React.createClass({
     componentWillReceiveProps(nextProps) {
         this.fetchServices(nextProps.process)
     },
-    toggleView(id, event) {
-        let arr = this.state.services
-        let index = _.findIndex(arr, { id: id })
-        arr.splice(index, 1, _.set(arr[index], 'active', !arr[index].active))
-
-        this.setState({
-            services: arr
-        })
-    },
-    handleSave() {
-
-    },
     render() {
         let services = this.state.services
         return !_.isEmpty(this.props.process) && <div>
             <p>{'Services used in  \"' + this.props.process.label + '\" '}</p>
             <ListGroup>
                 {services.map(
-                    (item, i) => <ListGroupItem onClick={this.toggleView.bind(this, item.id) } key={item.id} active={item.active}>{item.label}</ListGroupItem>
+                    (item, i) => <ListGroupItem key={item.id}>{item.label}</ListGroupItem>
                 ) }
             </ListGroup>
         </div>

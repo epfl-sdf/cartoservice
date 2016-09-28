@@ -1,5 +1,5 @@
 import React from 'react'
-import { Col } from 'react-bootstrap';
+import { Col } from 'react-bootstrap'
 import * as _ from 'lodash'
 
 import Carto from './Carto'
@@ -46,7 +46,7 @@ export default React.createClass({
     },
     render() {
         return <Col md={9}>
-            {!_.isEmpty(this.props.process) ? <Carto data={this.state.data}/> : <h5>Please select a process or custom map</h5>}
+            {!_.isEmpty(this.props.process) ? <Carto data={this.state.data} addCustom={this.props.addCustom}/> : <h5>Please select a process or custom map</h5>}
         </Col>
     }
 })

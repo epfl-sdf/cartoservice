@@ -1,4 +1,4 @@
-import React from 'react';
+import React from 'react'
 import * as d3 from 'd3';
 
 import CartoMenu from './CartoMenu'
@@ -10,15 +10,15 @@ export default React.createClass({
     getInitialState() {
         return { dataset: null }
     },
-    handleSave() {
-        let result = fetch('http://128.178.116.122:31304/api/post/process', {
+    handleSave(customName) {
+        let result = fetch('http://128.178.116.122:31304/api/post/custom', {
             method: 'POST',
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json'
             },
-            credentials: "omit",
-            body: JSON.stringify({ process: this.props.data.process, dataset: this.state.dataset })
+            credentials: 'omit',
+            body: JSON.stringify({ label: `${customName} (${this.props.data.process.label})`, dataset: this.state.dataset })
         })
 
         result
@@ -26,15 +26,14 @@ export default React.createClass({
                 return res.json()
             })
             .then(json => {
-                //this.props.changeProcess([{ id: 1, label: "test1", type: "custom" }])
-                console.log(json)
+                this.props.addCustom({ID: json, Label: `${customName} (${this.props.data.process.label})`, type: 'custom'})
             })
             .catch(ex => {
                 console.log('failed', ex)
             })
     },
     render() {
-        return (
+        return <div>
             <div style={{
                 width: '100%',
                 height: '100%'
@@ -42,7 +41,7 @@ export default React.createClass({
                 <CartoMenu handleSave={this.handleSave} />
                 <svg id={"carto"} ></svg>
             </div>
-        )
+        </div>
     },
     componentDidMount() {
         if (!_.isEmpty(this.props.data) && _.isEmpty(this.props.dataset)) {
