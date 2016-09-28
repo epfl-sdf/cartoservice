@@ -1,18 +1,18 @@
 import React from 'react';
-import { Navbar, Nav, NavItem, OverlayTrigger, Tooltip, Glyphicon} from 'react-bootstrap'
+import { Navbar, Nav, NavItem, Glyphicon} from 'react-bootstrap'
 
 export default React.createClass({
     render() {
-        const tooltip = <Tooltip id="tooltip">Save changes</Tooltip>
-
-        return <Navbar>
-            <Nav>
-                {this.props.modified && <NavItem eventKey={1} href="#">
-                    <OverlayTrigger placement="top" overlay={tooltip}>
-                        <Glyphicon onClick={this.handleSave} style={{ cursor: "pointer" }} glyph="floppy-save" /> Save file
-                    </OverlayTrigger>
-                </NavItem>}
-            </Nav>
-        </Navbar>
+        return <Nav bsStyle="pills">
+            <NavItem eventKey={1}>
+                <Glyphicon onClick={this.props.handleSave} style={{ cursor: "pointer" }} glyph="floppy-save" />
+            </NavItem>
+            <NavItem eventKey={2}>
+                <Glyphicon onClick={this.props.zoomIn} style={{ cursor: "pointer" }} glyph="plus" />
+            </NavItem>
+            <NavItem eventKey={3}>
+                <Glyphicon onClick={this.props.zoomOut} style={{ cursor: "pointer" }} glyph="minus" />
+            </NavItem>
+        </Nav>
     }
 })

@@ -22,20 +22,20 @@ export default React.createClass({
             })
 
             result
-            .then(res => {
-                return res.json()
-            })
-            .then(json => {
-                data.process = { id: process.id, label: process.label, systemId: json.processInfo.SystemId }
-                data.services = _.map(json.services, k => ({ id: k.ServiceId, label: k.Label, systemId: k.SystemId }))
-
-                this.setState({
-                    data: data
+                .then(res => {
+                    return res.json()
                 })
-            })
-            .catch(ex => {
-                console.log('failed', ex)
-            })
+                .then(json => {
+                    data.process = { id: process.id, label: process.label, systemId: json.processInfo.SystemId }
+                    data.services = _.map(json.services, k => ({ id: k.ServiceId, label: k.Label, systemId: k.SystemId }))
+
+                    this.setState({
+                        data: data
+                    })
+                })
+                .catch(ex => {
+                    console.log('failed', ex)
+                })
         }
     },
     componentDidMount() {

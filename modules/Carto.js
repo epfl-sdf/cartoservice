@@ -8,7 +8,30 @@ const w = 1000, h = 562;
 
 export default React.createClass({
     getInitialState() {
-        return { modified: false }
+        return { dataset: null }
+    },
+    handleSave() {
+        let result = fetch('http://128.178.116.122:31304/api/post/process', {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            credentials: "omit",
+            body: JSON.stringify({ process: this.props.data.process, dataset: this.state.dataset })
+        })
+
+        result
+            .then(res => {
+                return res.json()
+            })
+            .then(json => {
+                //this.props.changeProcess([{ id: 1, label: "test1", type: "custom" }])
+                console.log(json)
+            })
+            .catch(ex => {
+                console.log('failed', ex)
+            })
     },
     render() {
         return (
@@ -16,25 +39,24 @@ export default React.createClass({
                 width: '100%',
                 height: '100%'
             }}>
-                <CartoMenu modified={this.state.modified} />
+                <CartoMenu handleSave={this.handleSave} />
                 <svg id={"carto"} ></svg>
             </div>
         )
     },
     componentDidMount() {
-        if (!_.isEmpty(this.props.data)) {
+        if (!_.isEmpty(this.props.data) && _.isEmpty(this.props.dataset)) {
             this.drawGraph(this.parseData(this.props.data))
+        } else if (!_.isEmpty(this.props.dataset)) {
+            this.drawGraph(this.props.dataset)
         }
     },
     componentWillReceiveProps(nextProps) {
-        if (!_.isEmpty(nextProps)) {
+        if (!_.isEmpty(nextProps) && _.isEmpty(this.props.dataset)) {
             this.drawGraph(this.parseData(nextProps.data))
+        } else if (!_.isEmpty(this.props.dataset)) {
+            this.drawGraph(this.props.dataset)
         }
-    },
-    setSavable() {
-        this.setState({
-            modified: true
-        })
     },
     parseData(data) {
         const dataset = {
@@ -57,8 +79,7 @@ export default React.createClass({
         dataset.nodes[0].fx = w / 2;
         dataset.nodes[0].fy = h / 2;
 
-        console.log(dataset);
-
+        this.setState({ dataset: dataset })
         return dataset
     },
     clearGraph() {
@@ -66,9 +87,6 @@ export default React.createClass({
     },
     drawGraph(dataset) {
         this.clearGraph()
-        this.setState({
-            modified: false
-        })
 
         // init color pick
         var colors = d3.scaleOrdinal(d3.schemeCategory10);
