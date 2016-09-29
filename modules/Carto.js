@@ -46,15 +46,11 @@ export default React.createClass({
     componentDidMount() {
         if (!_.isEmpty(this.props.data) && _.isEmpty(this.props.dataset)) {
             this.drawGraph(this.parseData(this.props.data))
-        } else if (!_.isEmpty(this.props.dataset)) {
-            this.drawGraph(this.props.dataset)
         }
     },
     componentWillReceiveProps(nextProps) {
         if (!_.isEmpty(nextProps) && _.isEmpty(this.props.dataset)) {
             this.drawGraph(this.parseData(nextProps.data))
-        } else if (!_.isEmpty(this.props.dataset)) {
-            this.drawGraph(this.props.dataset)
         }
     },
     parseData(data) {
