@@ -33,7 +33,6 @@ export default React.createClass({
                             break;
                         case 'custom':
                             data.dataset = JSON.parse(json[0].Dataset)
-                            console.log(data.dataset)
                             break;
                     }
 

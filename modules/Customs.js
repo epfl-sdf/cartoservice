@@ -31,7 +31,7 @@ export default React.createClass({
             <p>Custom maps</p>
             <ListGroup>
                 {customs.map(
-                    (item, i) => <ListGroupItem onClick={() => this.props.changeProcess([{ id: item.ID, label: item.Label, type: "custom" }]) } key={item.ID} active={true}>{item.Label}</ListGroupItem>
+                    (item, i) => <ListGroupItem onClick={() => this.props.changeProcess([{ id: item.ID, label: item.Label, type: "custom" }]) } key={item.ID} active={item.ID == this.props.process.id}>{item.Label}</ListGroupItem>
                 ) }
             </ListGroup>
         </div>

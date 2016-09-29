@@ -8,9 +8,12 @@ const w = 1000, h = 562;
 
 export default React.createClass({
     getInitialState() {
-        return { dataset: null }
+        return { dataset: null, initialEdges: null }
     },
     handleSave(customName) {
+        const dataset = this.state.dataset
+        dataset.edges = JSON.parse(this.state.initialEdges)
+
         let result = fetch('http://128.178.116.122:31304/api/post/custom', {
             method: 'POST',
             headers: {
@@ -18,7 +21,7 @@ export default React.createClass({
                 'Content-Type': 'application/json'
             },
             credentials: 'omit',
-            body: JSON.stringify({ label: `${customName} (${this.props.data.process.label})`, dataset: this.state.dataset })
+            body: JSON.stringify({ label: `${customName} (${this.props.data.process.label})`, dataset: dataset })
         })
 
         result
@@ -39,7 +42,7 @@ export default React.createClass({
                 height: '100%'
             }}>
                 <CartoMenu handleSave={this.handleSave} />
-                <svg id={"carto"} ></svg>
+                <svg id={"carto"} />
             </div>
         </div>
     },
@@ -54,47 +57,49 @@ export default React.createClass({
         }
     },
     parseData(data) {
-        var systems = []
-        var services = [data.process, ...data.services]
+	if (data.dataset) {
+            this.setState({ dataset: data.dataset })
+            return data.dataset
+        } else {
+            var systems = []
+            var services = [data.process, ...data.services]
 
-        services.forEach((serv) => {
+            services.forEach((serv) => {
 
-            var sys = systems.find((s) => {
-                return s.id == serv.systemId;
-            });
+                var sys = systems.find((s) => {
+                    return s.id == serv.systemId;
+                });
 
-            if (sys === undefined) {
-                var newSystem = {
-                    id: serv.systemId,
-                    services: [{id: 0, serv: serv}],
-                    label: serv.systemId
-                };
+                if (sys === undefined) {
+                    var newSystem = {
+                        id: serv.systemId,
+                        services: [{id: 0, serv: serv}],
+                        label: serv.systemId
+                    };
 
-                systems = systems.concat(newSystem);
+                    systems = systems.concat(newSystem);
 
-            } else {
-                sys.services = sys.services.concat({id: sys.services.length, serv: serv});
-
-            }
-        })
-
-        const dataset = {
-            systems: systems,
-            edges: systems.slice(1).map((s, i) => {
-                return { source: 0, target: i+1 };
-            }),
-            servEdges: services.slice(1).map((s, i) => {
-                return { source: 0, target: i+1 };
+                } else {
+                    sys.services = sys.services.concat({id: sys.services.length, serv: serv})
+                }
             })
+
+            const dataset = {
+                systems: systems,
+                edges: systems.slice(1).map((s, i) => {
+                    return { source: 0, target: i+1 };
+                }),
+                servEdges: services.slice(1).map((s, i) => {
+                    return { source: 0, target: i+1 };
+                })
+            }
+            dataset.systems[0].fx = w / 2;
+            dataset.systems[0].fy = h / 2;
+
+            this.setState({ dataset: dataset })
+            this.setState({ initialEdges: JSON.stringify(dataset.edges) })
+            return dataset
         }
-        
-        console.log(dataset);
-
-        dataset.systems[0].fx = w / 2;
-        dataset.systems[0].fy = h / 2;
-
-        this.setState({ dataset: dataset })
-        return dataset
     },
     clearGraph() {
         d3.selectAll("svg > *").remove()
@@ -103,7 +108,7 @@ export default React.createClass({
         this.clearGraph()
 
         // init color pick
-        var colors = d3.scaleOrdinal(d3.schemeCategory10);
+        var colors = d3.scaleOrdinal(d3.schemeCategory10)
 
         // init simulation
         var simulation = d3.forceSimulation(dataset.systems)
@@ -115,15 +120,27 @@ export default React.createClass({
         // init svg
         var svg = d3.select("svg#carto")
             .attr("width", w)
-            .attr("height", h);
+            .attr("height", h)
 
         // init edges and systems
+        svg.append("svg:defs").append("svg:marker")
+            .attr("id", "triangle")
+            .attr("refX", 6)
+            .attr("refY", 6)
+            .attr("markerWidth", 30)
+            .attr("markerHeight", 30)
+            .attr("orient", "auto")
+            .append("path")
+            .attr("d", "M 0 0 12 6 0 12 3 6")
+            .style("fill", "black")
+        
         var edges = svg.selectAll("line.proc")
             .data(dataset.edges)
             .enter()
             .append("line")
-            .style("stroke", "#ccc")
-            .style("stroke-width", 1);
+            .style("stroke", "black")
+            .style("stroke-width", 1)
+            .attr("marker-end", "url(#triangle)")
 
         var systems = svg.selectAll("g")
             .data(dataset.systems)
@@ -168,7 +185,7 @@ export default React.createClass({
             .attr("transform", function (d) { return `translate(-40, -40)`; })            
             .text((d) => {
                 return d.label;
-            });
+            })
 
 
         var services = systems.selectAll("text")
@@ -194,6 +211,6 @@ export default React.createClass({
 
             systems
                 .attr("transform", function (d) { return `translate(${d.x}, ${d.y})`; });
-        });
+        })
     }
 })
