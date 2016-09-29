@@ -1,6 +1,7 @@
 g.node text {
     font-size: small;
     width: 70;
+    cursor: pointer;
 }
 
 rect.system {
