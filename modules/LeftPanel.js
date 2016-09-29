@@ -10,7 +10,7 @@ export default React.createClass({
         return (
             <Col md={3}>
                 <Customs customs={this.props.customs} changeProcess={this.props.changeProcess}/>
-                <ProcessServices process={this.props.process}/>
+                {this.props.process.type === 'process' && <ProcessServices process={this.props.process}/>}
             </Col>
         )
     }

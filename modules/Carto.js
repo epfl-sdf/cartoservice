@@ -26,7 +26,7 @@ export default React.createClass({
                 return res.json()
             })
             .then(json => {
-                this.props.addCustom({ID: json, Label: `${customName} (${this.props.data.process.label})`, type: 'custom'})
+                this.props.addCustom({ ID: json, Label: `${customName} (${this.props.data.process.label})`, type: 'custom' })
             })
             .catch(ex => {
                 console.log('failed', ex)
@@ -58,28 +58,32 @@ export default React.createClass({
         }
     },
     parseData(data) {
-        const dataset = {
-            nodes: [data.process, ...data.services],
-            edges: data.services.map((s, i) => {
-                return { source: 0, target: i + 1 };
-            }),
-            sysEdge: []
-        }
-
-        dataset.nodes.forEach((n1, i1) => {
-            for (var i2 = i1 + 1; i2 < dataset.nodes.length; i2++) {
-                var n2 = dataset.nodes[i2];
-                if (n1.systemId == n2.systemId) {
-                    dataset.sysEdge = dataset.sysEdge.concat({ source: i1, target: i2 })
-                }
+        if (data.dataset) {
+            this.setState({ dataset: data.dataset })
+            return data.dataset
+        } else {
+            const dataset = {
+                nodes: [data.process, ...data.services],
+                edges: data.services.map((s, i) => {
+                    return { source: 0, target: i + 1 };
+                }),
+                sysEdge: []
             }
-        })
 
-        dataset.nodes[0].fx = w / 2;
-        dataset.nodes[0].fy = h / 2;
+            dataset.nodes.forEach((n1, i1) => {
+                for (var i2 = i1 + 1; i2 < dataset.nodes.length; i2++) {
+                    var n2 = dataset.nodes[i2];
+                    if (n1.systemId == n2.systemId) {
+                        dataset.sysEdge = dataset.sysEdge.concat({ source: i1, target: i2 })
+                    }
+                }
+            })
 
-        this.setState({ dataset: dataset })
-        return dataset
+            dataset.nodes[0].fx = w / 2;
+            dataset.nodes[0].fy = h / 2;
+            this.setState({ dataset: dataset })
+            return dataset
+        }
     },
     clearGraph() {
         d3.selectAll("svg > *").remove()

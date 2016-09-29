@@ -26,8 +26,16 @@ export default React.createClass({
                     return res.json()
                 })
                 .then(json => {
-                    data.process = { id: process.id, label: process.label, systemId: json.processInfo.SystemId }
-                    data.services = _.map(json.services, k => ({ id: k.ServiceId, label: k.Label, systemId: k.SystemId }))
+                    switch (process.type) {
+                        case 'process':
+                            data.process = { id: process.id, label: process.label, systemId: json.processInfo.SystemId }
+                            data.services = _.map(json.services, k => ({ id: k.ServiceId, label: k.Label, systemId: k.SystemId }))
+                            break;
+                        case 'custom':
+                            data.dataset = JSON.parse(json[0].Dataset)
+                            console.log(data.dataset)
+                            break;
+                    }
 
                     this.setState({
                         data: data
