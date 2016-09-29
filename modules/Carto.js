@@ -93,6 +93,7 @@ export default React.createClass({
         dataset.systems[0].fx = w / 2;
         dataset.systems[0].fy = h / 2;
 
+        this.setState({ dataset: dataset })
         return dataset
     },
     clearGraph() {
