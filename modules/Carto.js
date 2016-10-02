@@ -74,7 +74,7 @@ export default React.createClass({
                     var newSystem = {
                         id: serv.systemId,
                         services: [{id: 0, serv: serv}],
-                        label: serv.systemId
+                        label: serv.label
                     };
 
                     systems = systems.concat(newSystem);
