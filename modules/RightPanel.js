@@ -29,7 +29,7 @@ export default React.createClass({
                     switch (process.type) {
                         case 'process':
                             data.process = { id: process.id, label: process.label, systemId: json.processInfo.SystemId }
-                            data.services = _.map(json.services, k => ({ id: k.ServiceId, label: k.Label, systemId: k.SystemId }))
+                            data.services = _.map(json.services, k => ({ id: k.ServiceId, label: k.Label, systemId: k.SystemId, systemLabel: k.SystemLabel }))
                             break;
                         case 'custom':
                             data.dataset = JSON.parse(json[0].Dataset)

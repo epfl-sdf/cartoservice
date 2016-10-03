@@ -65,32 +65,28 @@ export default React.createClass({
             var services = [data.process, ...data.services]
 
             services.forEach((serv) => {
-
                 var sys = systems.find((s) => {
-                    return s.id == serv.systemId;
+                    return s.id === serv.systemId
                 });
 
                 if (sys === undefined) {
-                    var newSystem = {
+                    systems.push({
                         id: serv.systemId,
                         services: [{id: 0, serv: serv}],
                         label: serv.label
-                    };
-
-                    systems = systems.concat(newSystem);
-
+                    })
                 } else {
-                    sys.services = sys.services.concat({id: sys.services.length, serv: serv})
+                    sys.services.push({
+                            id: sys.services.length,
+                            serv: serv
+                        })
                 }
             })
 
             const dataset = {
                 systems: systems,
                 edges: systems.slice(1).map((s, i) => {
-                    return { source: 0, target: i+1 };
-                }),
-                servEdges: services.slice(1).map((s, i) => {
-                    return { source: 0, target: i+1 };
+                    return { source: 0, target: i+1 }
                 })
             }
             dataset.systems[0].fx = w / 2;
@@ -153,12 +149,12 @@ export default React.createClass({
                         event = d3.event;
                         d.fx = event.x;
                         d.fy = event.y;
-                        simulation.alpha(0.5).restart();
+                        simulation.alpha(0.5).restart()
                     }
                 })
                 .on("end", (d) => {
                     if (!d.selected) {
-                        simulation.alpha(0.3).restart();
+                        simulation.alpha(0.3).restart()
                     }
                 })
             )
@@ -166,31 +162,46 @@ export default React.createClass({
                 systems.each((d) => { d.fx = null; d.fy = null })
                 d.fx = w / 2;
                 d.fy = h / 2;
-                simulation.alpha(0.3).restart();
+                simulation.alpha(0.3).restart()
             })
         
+        let textWidth = []
+
+         systems
+            .append("text")
+            .attr("text-anchor", "start")
+            .attr("alignment-baseline", "before-edge")
+            .attr("transform", function (d) { return `translate(-40, -40)` })            
+            .text(d => d.label)
+            .each(function(d) {
+                console.log(d);
+                var thisWidth = this.getBBox()
+                textWidth.push(thisWidth)
+                this.remove() // remove them just after displaying them
+            })
+
         systems
             .append("rect")
-            .attr("width", 100)
-            .attr("height", 100)
+            .attr("width", Math.max(...(textWidth.map(obj => obj.width))))
+            .attr("height", textWidth.reduce((prev, curr) => prev + curr.height, 0))
             .attr("rx", 10)
             .attr("ry", 10)
             .attr("class", "system")
-            .attr("transform", function (d) { return `translate(-50, -50)`; });
+            .attr("transform", function (d) { return `translate(-50, -50)` })
 
         systems
             .append("text")
             .attr("text-anchor", "start")
             .attr("alignment-baseline", "before-edge")
-            .attr("transform", function (d) { return `translate(-40, -40)`; })            
+            .attr("transform", function (d) { return `translate(-40, -40)` })            
             .text((d) => {
-                return d.label;
+                return d.label
             })
 
 
         var services = systems.selectAll("text")
             .data( (d) => {
-                return d.services;
+                return d.services
             })
             .enter()
             .append("text")
@@ -198,7 +209,7 @@ export default React.createClass({
                 return d.serv.label
             })
             .attr("transform", function (d, i) { 
-                return `translate(-40, ${-30 + i * 20})`; 
+                return `translate(-40, ${-30 + i * 20})`
             }) 
 
         // horloge du système
@@ -207,10 +218,10 @@ export default React.createClass({
                 .attr("x1", function (d) { return d.source.x; })
                 .attr("y1", function (d) { return d.source.y; })
                 .attr("x2", function (d) { return d.target.x; })
-                .attr("y2", function (d) { return d.target.y; });
+                .attr("y2", function (d) { return d.target.y; })
 
             systems
-                .attr("transform", function (d) { return `translate(${d.x}, ${d.y})`; });
+                .attr("transform", function (d) { return `translate(${d.x}, ${d.y})`; })
         })
     }
 })
