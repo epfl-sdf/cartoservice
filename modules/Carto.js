@@ -146,7 +146,7 @@ export default React.createClass({
             .call(d3.drag()
                 .on("drag", (d) => {
                     if (!d.selected) {
-                        event = d3.event;
+                        let event = d3.event;
                         d.fx = event.x;
                         d.fy = event.y;
                         simulation.alpha(0.5).restart()
