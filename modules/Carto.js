@@ -72,21 +72,21 @@ export default React.createClass({
                 if (sys === undefined) {
                     systems.push({
                         id: serv.systemId,
-                        services: [{id: 0, serv: serv}],
+                        services: [{ id: 0, serv: serv }],
                         label: serv.label
                     })
                 } else {
                     sys.services.push({
-                            id: sys.services.length,
-                            serv: serv
-                        })
+                        id: sys.services.length,
+                        serv: serv
+                    })
                 }
             })
 
             const dataset = {
                 systems: systems,
                 edges: systems.slice(1).map((s, i) => {
-                    return { source: 0, target: i+1 }
+                    return { source: 0, target: i + 1 }
                 })
             }
             dataset.systems[0].fx = w / 2;
@@ -109,7 +109,7 @@ export default React.createClass({
         // init simulation
         var simulation = d3.forceSimulation(dataset.systems)
             .force("link", d3.forceLink(dataset.edges).strength(0.1))
-            .force("central", d3.forceCenter(w / 2, h / 2))
+            //.force("central", d3.forceCenter(w / 2, h / 2))
             .force("charge", d3.forceManyBody().strength([-100]))
             .force("colliding", d3.forceCollide(70))
 
@@ -129,7 +129,7 @@ export default React.createClass({
             .append("path")
             .attr("d", "M 0 0 12 6 0 12 3 6")
             .style("fill", "black")
-        
+
         var edges = svg.selectAll("line.proc")
             .data(dataset.edges)
             .enter()
@@ -164,44 +164,57 @@ export default React.createClass({
                 d.fy = h / 2;
                 simulation.alpha(0.3).restart()
             })
-        
-        let textWidth = []
+
+        let textBBox = []
+
         systems
             .append("text")
             .attr("text-anchor", "start")
-            .attr("alignment-baseline", "before-edge")  
-            .attr("transform", (d, i) => `translate(10, 10)`)         
+            .attr("alignment-baseline", "before-edge")
+            .attr("transform", (d, i) => `translate(20, 30)`)
+            //.style("font-weight", "bold")
             .text(d => d.label)
-            .each(function(d) {
+            .each(function (d) {
                 let newElem = [[{
                     BBox: this.getBBox(),
                     systemId: d.id
                 }]]
-                textWidth = textWidth.concat(newElem)
+                textBBox = textBBox.concat(newElem)
             })
 
         var services = systems.selectAll("text")
             .data(d => d.services)
             .enter()
             .append("text")
+            .attr("text-anchor", "start")
+            .attr("alignment-baseline", "before-edge")
+            .attr("transform", (d, i) => `translate(20, ${(i+1) * 30})`)
             .text(d => d.serv.label)
-            .attr("transform", (d, i) => `translate(10, ${10 + i * 30})`)
-            .each(function(d) {
-                let index = _.findIndex(textWidth, obj => obj[0].systemId === d.serv.systemId)
+            .each(function (d) {
+                let index = _.findIndex(textBBox, obj => obj[0].systemId === d.serv.systemId)
                 let newElem = {
                     BBox: this.getBBox(),
                     systemId: d.serv.systemId
                 }
-                textWidth[index] = textWidth[index].concat(newElem)
+                textBBox[index] = textBBox[index].concat(newElem)
             })
 
-         systems
+        systems
+            .insert("rect")
+            .attr("width", (d, i) => Math.max(...(textBBox[i].map(obj => obj.BBox.width))) + 20 * 4)
+            .attr("height", 20)
+            .style("fill", "none")
+            .style("stroke", "grey")
+            .style("stroke-width", 1)
+
+        systems
             .insert("rect", ":first-child")
-            .attr("width", (d, i) => Math.max(...(textWidth[i].map(obj => obj.BBox.width))) + 20)
-            .attr("height", (d, i) => textWidth[i].reduce((prev, curr) => prev + curr.BBox.height, 0) + 20)
-            .attr("rx", 10)
-            .attr("ry", 10)
-            .attr("class", "system")
+            .attr("width", (d, i) => Math.max(...(textBBox[i].map(obj => obj.BBox.width))) + 20 * 4)
+            .attr("height", (d, i) => textBBox[i].reduce((prev, curr) => prev + curr.BBox.height, 0) + Math.max(30 * (textBBox[i].length), 30))
+            .style("fill", "white")
+            .style("stroke", "darkslategrey")
+            .style("stroke-width", 1)
+
 
         // horloge du système
         simulation.on("tick", function () {
