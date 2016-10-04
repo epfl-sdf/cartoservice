@@ -166,62 +166,53 @@ export default React.createClass({
             })
         
         let textWidth = []
-
-         systems
+        systems
             .append("text")
             .attr("text-anchor", "start")
-            .attr("alignment-baseline", "before-edge")
-            .attr("transform", function (d) { return `translate(-40, -40)` })            
+            .attr("alignment-baseline", "before-edge")  
+            .attr("transform", (d, i) => `translate(10, 10)`)         
             .text(d => d.label)
             .each(function(d) {
-                console.log(d);
-                var thisWidth = this.getBBox()
-                textWidth.push(thisWidth)
-                this.remove() // remove them just after displaying them
+                let newElem = [[{
+                    BBox: this.getBBox(),
+                    systemId: d.id
+                }]]
+                textWidth = textWidth.concat(newElem)
             })
 
-        systems
-            .append("rect")
-            .attr("width", Math.max(...(textWidth.map(obj => obj.width))))
-            .attr("height", textWidth.reduce((prev, curr) => prev + curr.height, 0))
+        var services = systems.selectAll("text")
+            .data(d => d.services)
+            .enter()
+            .append("text")
+            .text(d => d.serv.label)
+            .attr("transform", (d, i) => `translate(10, ${10 + i * 30})`)
+            .each(function(d) {
+                let index = _.findIndex(textWidth, obj => obj[0].systemId === d.serv.systemId)
+                let newElem = {
+                    BBox: this.getBBox(),
+                    systemId: d.serv.systemId
+                }
+                textWidth[index] = textWidth[index].concat(newElem)
+            })
+
+         systems
+            .insert("rect", ":first-child")
+            .attr("width", (d, i) => Math.max(...(textWidth[i].map(obj => obj.BBox.width))) + 20)
+            .attr("height", (d, i) => textWidth[i].reduce((prev, curr) => prev + curr.BBox.height, 0) + 20)
             .attr("rx", 10)
             .attr("ry", 10)
             .attr("class", "system")
-            .attr("transform", function (d) { return `translate(-50, -50)` })
-
-        systems
-            .append("text")
-            .attr("text-anchor", "start")
-            .attr("alignment-baseline", "before-edge")
-            .attr("transform", function (d) { return `translate(-40, -40)` })            
-            .text((d) => {
-                return d.label
-            })
-
-
-        var services = systems.selectAll("text")
-            .data( (d) => {
-                return d.services
-            })
-            .enter()
-            .append("text")
-            .text((d) => {
-                return d.serv.label
-            })
-            .attr("transform", function (d, i) { 
-                return `translate(-40, ${-30 + i * 20})`
-            }) 
 
         // horloge du système
         simulation.on("tick", function () {
             edges
-                .attr("x1", function (d) { return d.source.x; })
-                .attr("y1", function (d) { return d.source.y; })
-                .attr("x2", function (d) { return d.target.x; })
-                .attr("y2", function (d) { return d.target.y; })
+                .attr("x1", d => d.source.x)
+                .attr("y1", d => d.source.y)
+                .attr("x2", d => d.target.x)
+                .attr("y2", d => d.target.y)
 
             systems
-                .attr("transform", function (d) { return `translate(${d.x}, ${d.y})`; })
+                .attr("transform", d => `translate(${d.x}, ${d.y})`)
         })
     }
 })
