@@ -207,6 +207,50 @@ export default React.createClass({
             .style("stroke", "grey")
             .style("stroke-width", 1)
 
+        // BUTTON 1
+        systems
+            .insert("rect")
+            .attr("width", 15)
+            .attr("height", 15)
+            .attr("transform", (d, i) => `translate(${Math.max(...(textBBox[i].map(obj => obj.BBox.width))) + 20 * 4 - 77.5}, 2.5)`)
+            .style("fill", "orange")
+            .style("stroke", "grey")
+            .style("stroke-width", 1)
+            .on("click", () => {alert("Button 1")})
+
+        // BUTTON 2
+        systems
+            .insert("rect")
+            .attr("width", 15)
+            .attr("height", 15)
+            .attr("transform", (d, i) => `translate(${Math.max(...(textBBox[i].map(obj => obj.BBox.width))) + 20 * 4 - 57.5}, 2.5)`)
+            .style("fill", "red")
+            .style("stroke", "grey")
+            .style("stroke-width", 1)
+            .on("click", () => {alert("Button 2")})
+
+        // BUTTON 3
+        systems
+            .insert("rect")
+            .attr("width", 15)
+            .attr("height", 15)
+            .attr("transform", (d, i) => `translate(${Math.max(...(textBBox[i].map(obj => obj.BBox.width))) + 20 * 4 - 37.5}, 2.5)`)
+            .style("fill", "violet")
+            .style("stroke", "grey")
+            .style("stroke-width", 1)
+            .on("click", () => {alert("Button 3")})
+
+        // BUTTON 4
+        systems
+            .insert("rect")
+            .attr("width", 15)
+            .attr("height", 15)
+            .attr("transform", (d, i) => `translate(${Math.max(...(textBBox[i].map(obj => obj.BBox.width))) + 20 * 4 - 17.5}, 2.5)`)
+            .style("fill", "blue")
+            .style("stroke", "grey")
+            .style("stroke-width", 1)
+            .on("click", () => {alert("Button 4")})
+
         systems
             .insert("rect", ":first-child")
             .attr("width", (d, i) => Math.max(...(textBBox[i].map(obj => obj.BBox.width))) + 20 * 4)
