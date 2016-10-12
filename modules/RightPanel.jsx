@@ -36,8 +36,17 @@ class RightPanel extends React.Component {
               data.process = {
                 id: process.id,
                 label: process.label,
+                system: { id: json.processInfo.SystemId, label: json.processInfo.SystemLabel },
                 systemId: json.processInfo.SystemId,
               };
+              data.systems = _.map(
+                _.values(_.groupBy(json.services, s => s.SystemId)),
+                arr => ({
+                  id: arr[0].SystemId,
+                  label: arr[0].SystemLabel,
+                  services: _.map(arr, obj => ({ id: obj.ServiceId, label: obj.Label })),
+                })
+              );
               data.services = _.map(
                 json.services,
                 k => ({
@@ -47,6 +56,9 @@ class RightPanel extends React.Component {
                   systemLabel: k.SystemLabel,
                 })
               );
+
+
+              console.log(data);
               break;
             case 'custom':
               data.dataset = JSON.parse(json[0].Dataset);
@@ -66,9 +78,10 @@ class RightPanel extends React.Component {
   }
   render() {
     return (<Col md={9}>
-      {!_.isEmpty(this.props.process)
-        ? <Carto data={this.state.data} addCustom={this.props.addCustom} />
-        : <h5>Please select a process or custom map</h5>
+      {
+        !_.isEmpty(this.props.process)
+          ? <Carto data={this.state.data} addCustom={this.props.addCustom} />
+          : <h5>Please select a process or custom map</h5>
       }
     </Col>);
   }
