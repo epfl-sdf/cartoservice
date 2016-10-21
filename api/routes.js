@@ -1,20 +1,31 @@
-import Router from 'express'
-import { Api } from './api'
+import router from 'express';
+import { Api } from './api';
 
-var routes = Router()
-
-var api = new Api()
+const routes = router();
+const api = new Api();
 
 routes.get('/get/processes', (req, res) => {
-    api.getProcesses(res)
-})
+  api.getProcesses(res);
+});
 
 routes.get('/get/process/:id', (req, res) => {
-    api.getProcess(req.params.id, res)
-})
+  api.getProcess(req.params.id, res);
+});
 
 routes.get('/get/used/:id', (req, res) => {
-    api.getUsed(req.params.id, res)
-})
+  api.getUsed(req.params.id, res);
+});
 
-module.exports = routes
+routes.post('/post/custom', (req, res) => {
+  api.postCustom(JSON.parse(req.body), res);
+});
+
+routes.get('/get/customs', (req, res) => {
+  api.getCustoms(res);
+});
+
+routes.get('/get/custom/:id', (req, res) => {
+  api.getCustom(req.params.id, res);
+});
+
+module.exports = routes;
