@@ -31,20 +31,26 @@ When the installation process ends, the app will be run in the NodeJS server and
 ## 4. Additional NPM commands
 
 Most common command, run the app in production mode (calls `start:prod` under the hood):
-> npm start
+```bash
+npm start
+```
 
 Build the client and the server, then run the app in production mode:
-> npm run start:prod
-
+```bash
+npm run start:prod
+```
 Build only the client side of the code:
-> npm run build:client
-
+```bash
+npm run build:client
+```
 Build only the server side of the code:
-> npm run build:server
-
+```bash
+npm run build:server
+```
 Build both the client & server side of the code:
-> npm run build
-
+```bash
+npm run build
+```
 ## 5. Project structure
 ### Tree representation
 
@@ -155,7 +161,7 @@ App
 ### Details:
 
 Name | Description
---- | --- | ---
+--- | ---
 **routes** | Contains the routes of the client-side app components (i.e. which component to render for each URL)
 **App** | Main component of the app, it's the page layout
 *App*/**TopPanel**| Panel on the top where we display the processes search bar
