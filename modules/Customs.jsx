@@ -9,7 +9,7 @@ class Customs extends React.Component {
     this.state = { customs: [] };
   }
   componentDidMount() {
-    const result = fetch('http://128.178.116.122:31304/api/get/customs', {
+    const result = fetch('/api/get/customs', {
       headers: {
         'Content-Type': 'application/json',
       },

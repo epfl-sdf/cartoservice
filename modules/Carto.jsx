@@ -164,7 +164,7 @@ class Carto extends React.Component {
     const dataset = this.state.dataset;
     dataset.edges = JSON.parse(this.state.initialEdges);
 
-    const result = fetch('http://128.178.116.122:31304/api/post/custom', {
+    const result = fetch('/api/post/custom', {
       method: 'POST',
       headers: {
         Accept: 'application/json',

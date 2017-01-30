@@ -17,7 +17,7 @@ sudo apt-get -y install mysql-server
 
 
 #create db in server
-mysql -u root -p no_pass < ./db_carto.sql
+mysql -u root --password=no_pass < ./db_carto.sql
 
 #run the app
 npm start

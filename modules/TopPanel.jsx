@@ -12,7 +12,7 @@ class TopPanel extends React.Component {
     this.state = { processes: [] };
   }
   componentDidMount() {
-    const result = fetch('http://128.178.116.122:31304/api/get/processes', {
+    const result = fetch('/api/get/processes', {
       headers: {
         'Content-Type': 'application/json',
       },

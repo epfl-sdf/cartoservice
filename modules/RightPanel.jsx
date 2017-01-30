@@ -21,7 +21,7 @@ class RightPanel extends React.Component {
     if (!_.isEmpty(process)) {
       const data = {};
 
-      const result = fetch(`http://128.178.116.122:31304/api/get/${process.type}/${process.id}`, {
+      const result = fetch(`/api/get/${process.type}/${process.id}`, {
         headers: {
           'Content-Type': 'application/json',
         },
